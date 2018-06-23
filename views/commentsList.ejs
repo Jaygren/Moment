@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,6 +14,7 @@
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.7);
         }
+
         .user_icon_vote {
             display: inline-block;
             border-radius: 50%;
@@ -21,6 +23,7 @@
             border: #E7E7E7 solid 2px;
             margin: 0.5em;
         }
+
         nav span a p {
             float: left;
             color: white;
@@ -29,6 +32,14 @@
             margin-left: 45px;
             margin-top: 8px;
             font-size: 17px;
+        }
+
+        #user_id_username {
+            color: rebeccapurple;
+            display: inline-block;
+            margin-top: 1em;
+            font-size: 1.2em;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -39,7 +50,9 @@
             <div id="picturgroup">
                 <div style="padding: 1em 1.5em 0.5em;">
                     <div style="float: left;">
-                        <a href="#" id="picture_title"><%=picture.title%></a>
+                        <a href="#" id="picture_title">
+                            <%=picture.title%>
+                        </a>
                         <a href="#" style="text-decoration:none;display: inline-block;" id="xin_btn">
                             <%if(isVote){%>
                                 <img src="img/icon/爱心变化.png" style="vertical-align: bottom;width:30px" />
@@ -71,16 +84,24 @@
                                     <span style="margin-top:1.2em;margin-left:0em;display: inline-block;color:rgb(232,86,95);">点了赞</span>
                                     <%}%>
                     </a>
+                    <div style="float: right;margin-top:-1em;">
+                        <img src="<%=user.user_id.avatar%>" class="user_icon" style="display:inline-block;" />
+                        <span id="user_id_username">By：
+                            <%=user.user_id.username%>
+                        </span>
+                    </div>
                 </div>
                 <img style="margin-left: 10px" src="<%=picture.path%>" id="picture_info" />
-                <img src="<%=user.user_id.avatar%>" class="user_icon" style="width:70px;height:70px"/>
-                <h3 style="color: rebeccapurple">By：<%=user.user_id.username%></h3>
                 <br>
                 <br>
-                <h4 style="margin-left:10px">图片介绍：</h4>
-                <h3 style="margin-left:10px;color: rebeccapurple"><%=picture.abstract%></h3>
-                <br /> &emsp;&emsp;
-                <span style="font-size: 1.3em;">评论：</span>
+                <h3 style="margin-left:10px">图片介绍：</h3>
+                <div style="border:rgb(224, 224, 224) solid 2px;margin:0 10px;background:rgba(255, 255, 255, 0.7)">
+                    <h3 style="margin-left:10px;color: rebeccapurple">
+                        <%=picture.abstract%>
+                    </h3>
+                </div>
+                <br>
+                <h3 style="margin-left:10px">评论：</h3>
                 <div id="pinglunqu">
                     <br />
                     <div id="pinglun_div">
@@ -126,7 +147,11 @@
 <script type="text/template" id="template">
     {{if((num%2)===1) { }}
     <div class="user_pinglun_div_right">
-        <img src="{{=avatar}}" class="user_icon" />
+        {{if(avatar){ }}
+            <img src="{{=avatar}}" class="user_icon" />
+        {{ }else{ }}
+            <img src="/img/icon/姓名用户名(未注册).png" class="user_icon" />
+        {{ } }}
         <img src="img/pinglun/pinglunyou.png" class="pinglunyou_icon" />
         <div>
             <div style="float: right;margin-right: 0 !important;">
@@ -134,6 +159,8 @@
                 <div class="delcommentyou">
                     {{if(isLogin==="true"&&(username===name)){ }}
                     <a href="/commentsList/delete?pictureId={{=pictureId}}&id={{=id}}">删除</a>
+                    {{ }else{ }}
+                    <a style="opacity:0">删除</a>
                     {{ } }}
                 </div>
             </div>
@@ -142,13 +169,19 @@
     </div>
     {{ }else{ }}
     <div class="user_pinglun_div_left">
-        <img src="{{=avatar}}" class="user_icon" />
+        {{if(avatar){ }}
+            <img src="{{=avatar}}" class="user_icon" />
+        {{ }else{ }}
+            <img src="/img/icon/姓名用户名(未注册).png" class="user_icon" />
+        {{ } }}
         <img src="img/pinglun/pinglunzuo.png" class="pinglunzuo_icon" />
         <div>
             <p class="pinglun">{{= content }}</p>
             {{if(isLogin==="true"&&(username===name)){ }}
             <a href="/commentsList/delete?pictureId={{=pictureId}}&id={{=id}}" class="delcommentzuo">删除</a>
-            {{ } }}
+            {{ }else{ }}
+                    <a class="delcommentzuo"></a>
+                    {{ } }}
                 <br />
                 <span class="time_tag">{{=date}}</span>
             </div>
@@ -179,6 +212,7 @@
                     pictureId: "<%=pictureId%>",
                     isLogin: $('#isLogin').val(),
                     username: "<%=username%>",
+                    avatar: result[i].user_id.avatar
                 });
                 //DOM操作，添加节点
                 $("#pinglun_div").append($(html));
@@ -191,9 +225,9 @@
     //Ajax提交表单
     $("#submit").click(function () {
         if ($('#isLogin').val() === "false") {
-                alert('登录后才能评论');
-                return;
-            }
+            alert('登录后才能评论');
+            return;
+        }
         $.post("/commentsList", {
             "pictureId": "<%=pictureId%>",
             "content": $("#pinglunarea").val()
@@ -226,4 +260,5 @@
         }
     });
 </script>
+
 </html>

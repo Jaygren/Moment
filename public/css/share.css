@@ -90,10 +90,11 @@ body {
 .pic_title{
 	display:inline-block;
 	line-height:50px;
-	font-size:0.9em;
+	font-size:1.1em;
 	max-width:8em;
 	white-space: nowrap;
 	overflow:hidden;
+		margin-left:1em;
 }
 
 .picture_tag {

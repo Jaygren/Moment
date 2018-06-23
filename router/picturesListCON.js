@@ -51,18 +51,18 @@ module.exports = function () {
 			})
 		})
 	})
-	
+
 	// 更新图片描述
 	router.post('/updatePicAbstract', (req, res) => {
 		const { abstract, id } = req.body
-		
+
 		pictureDao.AbstractUpdate(id, abstract, (err) => {
 			if (err) {
 				console.log(err)
 				return res.send({ result: -1 })
 			}
 
-			res.redirect('/picturesList/pictureManage?pictureId='+id)
+			res.redirect('/picturesList/pictureManage?pictureId=' + id)
 		})
 	})
            
@@ -236,17 +236,29 @@ module.exports = function () {
 		})
 	})
 
-	/**
-	 *  TODO:发现页面、今日排行页面预留
-	 *  Router：/rank /getRank /discover /getDiscover
-	 */
-
     router.get('/rank',(req,res)=>{
         res.render("rank")
     })
 
     router.get('/getRank',(req,res)=>{
-
+		pictureDao.Pictures((err, data) => {
+			(function iterator(i) {
+				if (i === data.length || i === 9) {	//只取前十张图片
+					res.json(data.sort((x, y) => {
+						return y._doc.voteCount - x._doc.voteCount
+					}))
+					return
+				}
+				operationDao.OperationsCount({ user_id: req.session['user_id'] }, data[i]._id,
+					{ vote: { $exists: true } }, (err, result) => {
+						operationDao.UsersOfVote(data[i]._id, (err, dataCount) => {
+							data[i]._doc.voteCount = dataCount.length
+							data[i]._doc.isVote = result
+							iterator(i + 1)
+						})
+					})
+				})(0)
+		})
 	})
 	
 	router.get('/discover',(req,res)=>{
