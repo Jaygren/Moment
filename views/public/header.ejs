@@ -50,8 +50,8 @@
             <img class="touxiang" src="/img/icon/姓名用户名(未注册).png">
         </div>
         <form action="/user/login" method="post">
-            <input type="text" name="username" placeholder="请输入您的用户名或邮箱">
-            <input type="password" name="password" placeholder="请输入您的密码">
+            <input type="text" name="username" placeholder="请输入您的用户名或邮箱" required>
+            <input type="password" name="password" placeholder="请输入您的密码" required>
             <input class="tijiao" type="submit" value="提&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;交">
             <input class="wangjimima" type="button" value="忘记密码">
         </form>
@@ -71,8 +71,8 @@
         <form action="/user/createUser" method="post">
             <input type="text" name="username" placeholder="请填写您的用户名">
             <!-- <input type="text" placeholder="请填写您的邮箱"> -->
-            <input type="password" name="password" placeholder="请填写您的密码">
-            <input type="password" name="confirm" placeholder="请再次填写您的密码">
+            <input type="password" name="password" placeholder="请填写您的密码" required>
+            <input type="password" name="confirm" placeholder="请再次填写您的密码" required>
             <input class="tijiao" type="submit" value="注&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;册">
             <input class="wangjimima" type="button" value="返回登陆" onclick="nav_hidden();nav_side1();">
         </form>

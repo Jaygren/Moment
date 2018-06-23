@@ -34,29 +34,24 @@ module.exports = function () {
 		})
 	})
 
-	// 删除图片
-	router.delete('/removePic', (req, res) => {
+	//在个人中心处删除图片
+	router.post('/removePic', (req, res) => {
 		const { id } = req.query
 		pictureDao.removePicture(id, (err) => {
 			if (err) {
 				console.log(err)
 				return res.send({ result: -1 })
 			}
-
 			operationDao.OperationsAllDeleteByPicture(id, (err) => {
 				if (err) {
 					console.log(err)
 					return res.send({ result: -1 })
 				}
-
 				res.send({ result: 1 })
-
 			})
-
 		})
-
 	})
-
+	
 	// 更新图片描述
 	router.post('/updatePicAbstract', (req, res) => {
 		const { abstract, id } = req.body
@@ -67,26 +62,7 @@ module.exports = function () {
 				return res.send({ result: -1 })
 			}
 
-			res.send({ result: 1 })
-		})
-	})
-
-	// 获取个人的图片列表
-	router.get('/getPicList', (req, res) => {
-
-		const { user_id: id } = req.session
-
-		operationDao.getPersonalPictureList(id, (err, operations) => {
-			if (err) {
-				console.log(err)
-				return res.send({ result: -1 })
-			}
-
-			const pictureList = operations.map(operation => {
-				return operation.picture
-			})
-
-			res.send({ result: pictureList })
+			res.redirect('/picturesList/pictureManage?pictureId='+id)
 		})
 	})
            
@@ -187,14 +163,6 @@ module.exports = function () {
 				console.log(err)
 				return res.send({ result: -1 })
 			}
-		
-			// operations = await Promise.all(operations.map(operation => {
-			// 	return operation
-			// 		.populate({
-			// 			path: 'picture',select: ['_id', 'title','path']
-			// 		})
-			// 		.execPopulate()
-			// }))
 
 			pictures =  await Promise.all(pictures.map(async picture => {
 				let isFavor=await operationDao.OperationsCount(
@@ -223,9 +191,50 @@ module.exports = function () {
 		})
 	})
 
-	router.get('/pictureManage',(req,res)=>{
-        res.render("pictureManage");
-    })
+	router.get('/pictureManage', (req, res) => {
+		pictureDao.findOne({ _id: req.query.pictureId }, (err, picture) => {
+			res.render("pictureManage", picture);
+		})
+	})
+
+	// 获取个人的图片列表
+	router.get('/getPicList', (req, res) => {
+
+		const { user_id: id } = req.session
+
+		operationDao.getPersonalPictureList(id, async (err, operations) => {
+			if (err) {
+				console.log(err)
+				return res.send({ result: -1 })
+			}
+		
+			operations = await Promise.all(operations.map(operation => {
+				return operation
+					.populate({
+						path: 'picture',select: ['_id', 'title','path']
+					})
+					.execPopulate()
+			}))
+
+
+			operations =  await Promise.all(operations.map(async operation => {			
+				let voteCount=await operationDao.OperationsCount(
+					{},
+					operation.picture._id,
+					{vote:{$exists:true}})
+
+				operation._doc.voteCount=voteCount		
+				
+				return operation
+			}))
+
+			const pictures =operations.map(operation=>{
+				return operation
+			})
+
+			res.json(pictures)
+		})
+	})
 
 	/**
 	 *  TODO:发现页面、今日排行页面预留

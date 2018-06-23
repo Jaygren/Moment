@@ -13,221 +13,186 @@
 		<script src="../JS/side.js"></script>
 	</head>
 <style>
-	.fangxiandiv_div{
+	.fangxiandiv_div {
 		background: none;
 	}
+
 	#success,
 	#fail {
-		display: none; 
-		margin-top : 5px;
+		display: none;
+		margin-top: 5px;
 		margin-left: 80px;
 		width: 50%;
 		height: 50px;
 	}
 </style>
-	<body>
-		<%-include public/header.ejs%>
-	<div id="main">
+
+<body>
+	<%-include public/header.ejs%>
+		<div id="main">
 			<div id="picturgroup">
 				<div id="gereninform">
 					<h2>个人信息</h2>
-				<form action="/user/avatar" method="POST" enctype="multipart/form-data">
-					<hr/>
-					<div style="margin-left:4em;text-align: center;width:100px;margin-top: 1em;vertical-align: top; display: inline-block;">
-						<img id="gerenxinxitouxiang" src="<%=user.avatar%>" />
-						<h3 style="color: rebeccapurple"><%=user.username%></h3>
-						<input type="file" name="avatar"/>				
-					</div>
-					<div id="xinxixiugaiyou">
-						<p>修改密码:<input type="text"/></p>
-						<p style="margin-top: 2em;">性别:<label><input name="sex" type="radio" checked/>男</label><label><input name="sex" type="radio" style="margin-left:4em;"/>女</label></p>
-						<p>联系电话:<input type="text"/></p>
-						<div style="margin-top:6em;">
-						<input type="submit" name="" style="width: 150px;" class="picture_info_submit" value="提交" />
-						<input type="reset" name="" class="picture_info_reset" value="重置" />
+					<form action="/user/avatar" method="POST" enctype="multipart/form-data">
+						<hr/>
+						<div style="margin-left:4em;text-align: center;width:100px;margin-top: 1em;vertical-align: top; display: inline-block;">
+
+							<% if(user.avatar){ %>
+								<img id="gerenxinxitouxiang" src="<%=user.avatar%>" />
+								<% }else{ %>
+									<img id="gerenxinxitouxiang" style="background:white" src="/img/icon/姓名用户名(未注册).png" alt="">
+									<% } %>
+										<h3 style="color: rebeccapurple">
+											<%=user.username%>
+										</h3>
+										<input type="file" name="avatar" />
 						</div>
-					</div>
-				</form>
-				</div>
-	
-			<h2>上传图片</h2>
-			<hr />
-			<div class="tupianguanli">
-				<div class="alert alert-success" role="alert" id="success">
-					<a href="#" class="alert-link">图片上传成功</a>
-				</div>
-				<div class="alert alert-danger" role="alert" id="fail">
-					<a href="#" class="alert-link">图片上传失败</a>
-				</div>
-				<form  id="uploadPicForm" enctype="multipart/form-data">
-					<p>1.上传图片名称：</p>
-					<input type="text" name="title" id="picture_title_input" value="" placeholder="请给图片标题命名" />
-					<!--<button style="height:2.2em;">确定</button>-->
-					<div>
-						<div class="shangchuanwenjian_2_div">
-							<p>2.请上传图片文件：</p>
-							<input name="picture" type="file" id="picture_file_input" />
+						<div id="xinxixiugaiyou">
+							<p>修改密码：
+								<input type="password" name="password" placeholder="在此处修改密码"/>
+							</p>
+							<p style="margin-top: 2em;">性别：
+								<label style="margin-left:8em;">
+									<input name="sex" type="radio" value="man" <%if(!user.sex){%>checked<%}%> <%if(user.sex=='man'){%>checked<%}%>/>&emsp;男</label>
+								<label>
+									<input name="sex" type="radio" value="women"  <%if(user.sex=='women'){%>checked<%}%> style="margin-left:4em;" />&emsp;女</label>
+							</p>
+							<p>联系电话：
+								<input type="tel" name="phone" value="<%=user.phone%>" placeholder="请在此输入联系电话"/>
+							</p>
+							<div style="margin-top:6em;">
+								<input type="submit" name="" style="width: 150px;" class="picture_info_submit" value="提交" />
+								<input type="reset" name="" class="picture_info_reset" value="重置" />
+							</div>
 						</div>
-						<div class="shangchuanwenjian_2_div">
-							<p>3.备注：</p>
-							<textarea name="abstract" rows="" cols="" id="picture_info_textarea">图片备注</textarea>
+					</form>
+				</div>
+
+				<h2>上传图片</h2>
+				<hr />
+				<div class="tupianguanli">
+					<div class="alert alert-success" role="alert" id="success">
+						<a href="#" class="alert-link">图片上传成功</a>
+					</div>
+					<div class="alert alert-danger" role="alert" id="fail">
+						<a href="#" class="alert-link">图片上传失败</a>
+					</div>
+					<form id="uploadPicForm" enctype="multipart/form-data">
+						<p>1.上传图片名称：</p>
+						<input type="text" name="title" id="picture_title_input" value="" placeholder="请给图片标题命名" />
+						<!--<button style="height:2.2em;">确定</button>-->
+						<div>
+							<div class="shangchuanwenjian_2_div">
+								<p>2.请上传图片文件：</p>
+								<input name="picture" type="file" id="picture_file_input" />
+							</div>
+							<div class="shangchuanwenjian_2_div">
+								<p>3.图片介绍：</p>
+								<textarea name="abstract" rows="" cols="" id="picture_info_textarea">图片介绍</textarea>
+							</div>
 						</div>
-					</div>
-					<br />
-					<div>
-						<input type="button" id="submit" class="picture_info_submit" value="提交" />
-						<input type="reset" name="" class="picture_info_reset" value="重置" />
-					</div>
-				</form>
+						<br />
+						<div>
+							<input type="button" id="submit" class="picture_info_submit" value="提交" />
+							<input type="reset" name="" class="picture_info_reset" value="重置" />
+						</div>
+					</form>
+				</div>
+
+				<h2>图片管理</h2>
+				<hr />
+				<center id="tupianguanlifaxiandiv">
+				</center>
+				<br>
+				<br>
 			</div>
-	
-			<h2>图片管理</h2>
-			<hr />
-			<br />
-			<center>
-				<div class="fangxiandiv">
-					<div class="fangxiandiv_div">
-						<a href="/pictureslist/pictureManage">
-							<button class="xin_icon left_top">编辑</button>
-						</a>
-						<a href="">
-							<img src="img/faxian/samplepicture.png" class="picture" />
-						</a>
-						<button class="picture_tag right_bottom">删除</button>
-						<p class="favorcount">
-							收藏：22人
-						</p>
-					</div>
-				</div>
-				<div class="fangxiandiv">
-					<div class="fangxiandiv_div">
-						<a href="/pictureslist/pictureManage">
-							<button class="xin_icon left_top">编辑</button>
-						</a>
-						<a href="">
-							<img src="img/faxian/samplepicture.png" class="picture" />
-						</a>
-						<button class="picture_tag right_bottom">删除</button>
-						<p class="favorcount">
-							收藏：22人
-						</p>
-					</div>
-				</div>
-				<div class="fangxiandiv">
-					<div class="fangxiandiv_div">
-						<a href="/pictureslist/pictureManage">
-							<button class="xin_icon left_top">编辑</button>
-						</a>
-						<a href="">
-							<img src="img/faxian/samplepicture.png" class="picture" />
-						</a>
-						<button class="picture_tag right_bottom">删除</button>
-						<p class="favorcount">
-							收藏：22人
-						</p>
-					</div>
-				</div>
-				<div class="fangxiandiv">
-					<div class="fangxiandiv_div">
-						<a href="/pictureslist/pictureManage">
-							<button class="xin_icon left_top">编辑</button>
-						</a>
-						<a href="">
-							<img src="img/faxian/samplepicture.png" class="picture" />
-						</a>
-						<button class="picture_tag right_bottom">删除</button>
-						<p class="favorcount">
-							收藏：22人
-						</p>
-					</div>
-				</div>
-				<div class="fangxiandiv">
-					<div class="fangxiandiv_div">
-						<a href="/pictureslist/pictureManage">
-							<button class="xin_icon left_top">编辑</button>
-						</a>
-						<a href="">
-							<img src="img/faxian/samplepicture.png" class="picture" />
-						</a>
-						<button class="picture_tag right_bottom">删除</button>
-						<p class="favorcount">
-							收藏：22人
-						</p>
-					</div>
-				</div>
-				<div class="fangxiandiv">
-					<div class="fangxiandiv_div">
-						<a href="/pictureslist/pictureManage">
-							<button class="xin_icon left_top">编辑</button>
-						</a>
-						<a href="">
-							<img src="img/faxian/samplepicture.png" class="picture" />
-						</a>
-						<button class="picture_tag right_bottom">删除</button>
-						<p class="favorcount">
-							收藏：22人
-						</p>
-					</div>
-				</div>
-				<div class="fangxiandiv">
-					<div class="fangxiandiv_div">
-						<a href="/pictureslist/pictureManage">
-							<button class="xin_icon left_top">编辑</button>
-						</a>
-						<a href="">
-							<img src="img/faxian/samplepicture.png" class="picture" />
-						</a>
-						<button class="picture_tag right_bottom">删除</button>
-						<p class="favorcount">
-							收藏：22人
-						</p>
-					</div>
-				</div>
-				<div class="fangxiandiv">
-					<div class="fangxiandiv_div">
-						<a href="/pictureslist/pictureManage">
-							<button class="xin_icon left_top">编辑</button>
-						</a>
-						<a href="">
-							<img src="img/faxian/samplepicture.png" class="picture" />
-						</a>
-						<button class="picture_tag right_bottom">删除</button>
-						<p class="favorcount">
-							收藏：22人
-						</p>
-					</div>
-				</div>
-	
-				<br />
-				<br />
-				<br />
-			</center>
 		</div>
-	</div>
 		<div id="bac-ss" onclick="mybacclick()"></div>
-	</body>
+</body>
+
+<script type="text/template" id="template">
+	<div class="fangxiandiv">
+			<div class="fangxiandiv_div">
+				<a href="/picturesList/pictureManage?pictureId={{=id}}">
+					<button class="xin_icon left_top">编辑</button>
+				</a>
+				<a href="/commentsList?pictureId={{=id}}">
+					<img src="{{=path}}" class="picture" />
+				</a>
+				<button class="picture_tag right_bottom delPicBtn">删除</button>
+				<p class="favorcount">
+					点赞：{{=voteCount}}人
+				</p>
+			</div>
+		</div>
+		<input type="hidden" value="{{=id}}" class="pic_id">
+	</div>
+</script>
+
+
 <script type="text/javascript">
 	//Ajax提交表单
-    $("#submit").click(() => {
-        $("#fail").hide();
-        $("#success").hide();
+	$("#submit").click(() => {
+		$("#fail").hide();
+		$("#success").hide();
 		$.ajax({
 			url: '/picturesList/uploadPic',
 			type: 'POST',
 			data: new FormData($("#uploadPicForm")[0]),
 			dataType: 'JSON',
-			cache: false,                     
-			processData: false,              
+			cache: false,
+			processData: false,
 			contentType: false,
-			success:function (result) {
+			success: function (result) {
 				if (result.result === -1) {
 					$("#fail").fadeIn();
 				} else if (result.result === 1) {
 					//提交成功
 					$("#success").fadeIn();
+					getData();
 				}
 			}
-		})	
+		})
 	})
+	getData();
+	//Ajax请求数据
+	function getData(url = "/picturesList/getPicList", json = {}) {
+		$.get(url, json, (result) => {
+			console.log(result)
+			if (!result) {
+				$(".pictures").html("<h1>没有相关图片</h1>")
+				return
+			}
+			//模板函数
+			let compiled = _.template($("#template").html())
+			//清空全部留言中的所有节点
+			$("#tupianguanlifaxiandiv").html("")
+			for (let i = 0; i < result.length; i++) {
+				//数据绑定
+				let html = compiled({
+					id: result[i].picture._id,
+					title: result[i].picture.title,
+					path: result[i].picture.path,
+					voteCount: result[i].voteCount,
+				})
+				//DOM操作，添加节点
+				$("#tupianguanlifaxiandiv").append($(html))
+			}
+			$("#tupianguanlifaxiandiv").append($("<br><br><br><center><div><a href=\"#\"><img src=\"/img/faxian/shuaxin.png\" />\n" +
+				"</a></div> </center>"))
+		})
+	}
+
+	$(document).on("click", ".delPicBtn", function () {
+		if (confirm('确定删除该图片？其相关的收藏和点赞也将清空！')) {
+			let index = $('.delPicBtn').index($(this))
+			let pic = $('.pic_id:eq(' + index + ')').val()
+			$.post("/picturesList/removePic?id=" + pic, (result) => {
+				getData();
+			})
+		}
+	})
+
 </script>
+
 </html>

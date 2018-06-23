@@ -48,19 +48,26 @@ module.exports = function () {
 	})
 
 	router.post('/avatar', upload.single('avatar'), (req, res) => {
-		const base64Url = req.file.buffer.toString('base64')
-		const formattedUrl = 'data:' + req.file.mimetype + ';base64,' + base64Url
-
+		const { password, sex, phone } = (req.body)
+		if (req.file) {
+			const base64Url = req.file.buffer.toString('base64')
+			const formattedUrl = 'data:' + req.file.mimetype + ';base64,' + base64Url
+		}
 		userDao.findUserById(req.session.user_id, (err, user) => {
 			if (err || !user) return res.send({ result: -1 })
-
-			user.avatar = formattedUrl
+			if (req.file) {
+				user.avatar = formattedUrl
+			}
+			if (password && password != "") {
+				user.password = password
+			}
+			user.sex = sex
+			user.phone = phone
 			user.save(err => {
 				if (err) return res.send({ result: -1 })
-				res.send({ result: 1 })
+				res.redirect('/user/personalCenter');
 			})
 		})
-
 	})
 
 	router.get('/avatar', (req, res) => {
@@ -75,9 +82,12 @@ module.exports = function () {
 	})
 
 	router.get('/personalCenter', (req, res) => {
+		if(!!req.session.user_id)
 		userDao.findById(req.session.user_id,(err,user)=>{
 			res.render("personalCenter", {user:user})	
 		})
+		else
+		res.redirect("/")
 	})
 
 	return router
