@@ -75,13 +75,10 @@ OperationSchema.statics.getPersonalPictureList = function (user_id, cb) {
 	}, cb)
 }
 
-// 12. 获取最新的前n个图片
-OperationSchema.statics.getLatestPictures = function (num, cb) {
-	return this.find({
-		favor: { $exists: false },
-		vote: { $exists: false },
-		comment: { $exists: false },
-	}).sort({ date: -1 }).limit(num).exec(cb)
+// 12. 获取某张图片的发布者
+OperationSchema.statics.getUserOfPicture=function (pictureId,cb) {
+    return this.findOne({$and:[{picture: pictureId},{issue:{$exists:true}},]},{user_id:1})
+        .populate('user_id').exec(cb)
 }
 
 module.exports=mongoose.model('Operation',OperationSchema);

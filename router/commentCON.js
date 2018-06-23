@@ -29,16 +29,19 @@ module.exports = function () {
                     { vote: { $exists: true } }, (err, result) => {
                     operationDao.UsersOfVote(req.query.pictureId, (err, dataCount)=> {
                         pictureDao.findById(req.query.pictureId,(err,picture)=>{
-                            isVote = result
-                            voteCount=dataCount
-                            res.render("commentsList",
-                                {
-                                    pictureId: req.query.pictureId,
-                                    username: req.session["username"],
-                                    isVote: isVote,
-                                    voteCount: voteCount,
-                                    picture: picture
-                                })
+                            operationDao.getUserOfPicture(req.query.pictureId,(err,user)=>{
+                                isVote = result
+                                voteCount=dataCount
+                                res.render("commentsList",
+                                    {
+                                        pictureId: req.query.pictureId,
+                                        username: req.session["username"],
+                                        isVote: isVote,
+                                        voteCount: voteCount,
+                                        picture: picture,
+                                        user:user
+                                    })
+                            })
                         });
                     })
                 })
