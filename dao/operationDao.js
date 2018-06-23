@@ -9,7 +9,7 @@ const commentDao=require("./commentDao")
 const OperationSchema=new Schema({
     user_id   :{type:Schema.ObjectId , ref: 'User' },
     picture   :{type:Schema.ObjectId , ref: 'Picture'},
-    date      :{type:Date,default:Date.now()},
+    date      :{type:Date,default:Date.now},
     issue     : issueDao.issueSchema,
     favor     : favorDao.favorSchema,
     vote      : voteDao.voteSchema,
